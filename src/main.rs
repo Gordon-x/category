@@ -8,6 +8,7 @@ const RESULT_PATH:&str = "结果";
 
 fn main() {
     let mut path = String::new();
+    print!("{}", path);
 
     loop {
         print!("目录 > ");
@@ -64,7 +65,7 @@ fn read_dir(path: &str) -> Vec<PathBuf> {
 
 fn create_result_root(base_path: &str) -> PathBuf {
     let path = Path::new(base_path);
-    let new_root = path.join(Path::new(RESULT_PATH));
+    let new_root = path.parent().unwrap().join(Path::new(RESULT_PATH));
     if !new_root.exists() {
         fs::create_dir(new_root.as_path()).unwrap();
     }
@@ -119,4 +120,5 @@ fn page(result_path: &PathBuf, all: &Vec<PathBuf>) {
         let _ = fs::copy(from, to).unwrap();
         fs::remove_file(from).unwrap();
     }
+    println!("按页码分类完成")
 }
