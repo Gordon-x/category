@@ -26,8 +26,7 @@ fn main() {
     }
 
     let result_path = create_result_root(&path);
-    first_page(&result_path, &files);
-
+    page(&result_path, &files);
 
     print!("请按任意键退出程序...");
     stdout().flush().unwrap();
@@ -72,29 +71,51 @@ fn create_result_root(base_path: &str) -> PathBuf {
     new_root
 }
 
-fn first_page(result_path: &PathBuf, all: &Vec<PathBuf>) {
-    let first_page_path = result_path.join(Path::new("first_page"));
+fn page(result_path: &PathBuf, all: &Vec<PathBuf>) {
+    let first_page_path = result_path.join(Path::new("第一页"));
+    let other_page_path = result_path.join(Path::new("其他页"));
 
     if !first_page_path.exists() {
         fs::create_dir(first_page_path.as_path()).unwrap();
         if first_page_path.exists() {
-            println!("创建成功");
+            println!("第一页 目录创建成功...");
         }
     }
 
-    let second = all.iter().filter(|f| {
+    if !other_page_path.exists() {
+        fs::create_dir(other_page_path.as_path()).unwrap();
+        if other_page_path.exists() {
+            println!("其他页 目录创建成功...");
+        }
+    }
+
+    let first = all.iter().filter(|f| {
         let s = f.to_str().unwrap();
-        if let Some(_) = s.find("第2页") {
+        if let Some(_) = s.find("第1页") {
             return true;
         }
         false
     }).collect::<Vec<_>>();
 
-    println!("{:?}", second);
+    let other = all.iter().filter(|f| {
+        let s = f.to_str().unwrap();
+        if let None = s.find("第1页") {
+            return true;
+        }
+        false
+    }).collect::<Vec<_>>();
 
-    for from in second {
+
+    for from in first {
         let name = from.file_name().unwrap();
         let to = first_page_path.join(name);
+        let _ = fs::copy(from, to).unwrap();
+        fs::remove_file(from).unwrap();
+    }
+
+    for from in other {
+        let name = from.file_name().unwrap();
+        let to = other_page_path.join(name);
         let _ = fs::copy(from, to).unwrap();
         fs::remove_file(from).unwrap();
     }
