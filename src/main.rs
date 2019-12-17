@@ -27,6 +27,11 @@ fn main() {
 
     let result_path = create_result_root(&path);
     first_page(&result_path, &files);
+
+
+    print!("请按任意键退出程序...");
+    stdout().flush().unwrap();
+    let _ = get_path_string_from_input();
 }
 
 fn get_path_string_from_input() -> String {
