@@ -4,7 +4,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::ffi::OsStr;
 
-const RESULT_PATH:&str = "结果";
+const RESULT_PATH:&str = "_按页分类结果";
 
 fn main() {
     let mut path = String::new();
@@ -65,7 +65,10 @@ fn read_dir(path: &str) -> Vec<PathBuf> {
 
 fn create_result_root(base_path: &str) -> PathBuf {
     let path = Path::new(base_path);
-    let new_root = path.parent().unwrap().join(Path::new(RESULT_PATH));
+    let mut new_path_name = path.file_name().unwrap().to_str().unwrap().to_string();
+    new_path_name.push_str(RESULT_PATH);
+
+    let new_root = path.parent().unwrap().join(Path::new(&new_path_name));
     if !new_root.exists() {
         fs::create_dir(new_root.as_path()).unwrap();
     }
