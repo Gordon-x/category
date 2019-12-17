@@ -111,14 +111,12 @@ fn page(result_path: &PathBuf, all: &Vec<PathBuf>) {
         let name = from.file_name().unwrap();
         let to = first_page_path.join(name);
         let _ = fs::copy(from, to).unwrap();
-        fs::remove_file(from).unwrap();
     }
 
     for from in other {
         let name = from.file_name().unwrap();
         let to = other_page_path.join(name);
         let _ = fs::copy(from, to).unwrap();
-        fs::remove_file(from).unwrap();
     }
     println!("按页码分类完成")
 }
