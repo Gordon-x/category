@@ -43,7 +43,7 @@ fn copy_images(all_files: Vec<PathBuf>, first_path: PathBuf, other_path: PathBuf
     copy(first_page, &first_path);
     copy(other_page, &other_path);
 
-    println!("按页码分类完成");
+    println!("{:-<24}{}", "按页码分类图片", "完成");
 }
 
 ///
@@ -72,7 +72,7 @@ fn create_result_dir(input_path: &Path) -> (PathBuf, PathBuf) {
     create_dir(&first_page);
     create_dir(&other_page);
 
-    println!("已创建结果保存目录");
+    println!("{:-<24}{}", "创建结果保存目录", "完成");
     (first_page, other_page)
 }
 
