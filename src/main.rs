@@ -15,19 +15,20 @@ const FIRST_PAGE_PATTERN:&str = "第1页";
 /// Business
 ///
 fn main() {
-    let mut path = get_path_and_check();
+    loop {
+        let path = get_path_and_check();
 
-    println!("当前路径: {:?}\n", path);
-    let files = read_dir(path.as_path(), "png");
-    if files.len() == 0 {
-        println!("目录下没有png格式图片");
-        wait_for_end();
+        println!("当前路径: {:?}", path);
+        let files = read_dir(path.as_path(), "png");
+        if files.len() == 0 {
+            println!("目录下没有png格式图片");
+            wait_for_end();
+        }
+
+        let (first_page, other_page) = create_result_dir(path.as_path());
+        copy_images(files, first_page, other_page);
+        println!();
     }
-
-    let (first_page, other_page) = create_result_dir(path.as_path());
-    copy_images(files, first_page, other_page);
-
-    wait_for_end();
 }
 
 
@@ -42,7 +43,7 @@ fn copy_images(all_files: Vec<PathBuf>, first_path: PathBuf, other_path: PathBuf
     copy(first_page, &first_path);
     copy(other_page, &other_path);
 
-    println!("按页码分类完成\n")
+    println!("按页码分类完成");
 }
 
 ///
@@ -71,6 +72,7 @@ fn create_result_dir(input_path: &Path) -> (PathBuf, PathBuf) {
     create_dir(&first_page);
     create_dir(&other_page);
 
+    println!("已创建结果保存目录");
     (first_page, other_page)
 }
 
@@ -88,7 +90,7 @@ fn get_path_and_check() -> PathBuf {
             if path.is_dir() {
                 return path.to_owned();
             } else {
-                println!("输入不是目录\n");
+                println!("输入不是目录");
             }
         }
     }
@@ -189,9 +191,9 @@ fn bin_category(collection: Vec<PathBuf>, keyword: &str) -> (Vec<PathBuf>, Vec<P
         .iter()
         .map(|v| {
             if let Some(_) = v.to_string_lossy().find(keyword) {
-                one.push(*v);
+                one.push(v.to_owned());
             } else {
-                other.push(*v);
+                other.push(v.to_owned());
             }
         })
         .collect::<Vec<_>>();
